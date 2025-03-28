@@ -34,7 +34,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 @st.cache_resource
 def load_model():
-    model_path = os.path.join(os.getcwd(), 'productosa.h5')
+    model_path = os.path.join(os.getcwd(), 'modelo_entrenado.h5')
     model = tf.keras.models.load_model(model_path)
     return model
 
