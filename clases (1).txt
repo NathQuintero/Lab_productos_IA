@@ -1,10 +1,25 @@
-Ariel
-Bombombum
-Cheetos
-Chocorramo Esquinas
-Desodorante Old Spice
-Enjuague Bucal Oral B
-Jabón Palmolive natural
-MRTEA
-Head and shoulders
-Tosh
+advanced_optical_microscope  
+agitador_magnetico_placa_calentamiento_EQ_AMPC1C  
+aire_acondicionado_YORK  
+area_de_trabajo  
+banner_promocional  
+cafetera  
+casilleros  
+computador  
+control_remoto_robot  
+control_remoto_smart_tv  
+estacion_soldadura_aire_caliente  
+gabinete_almacenamiento  
+impresora_3d_creality_k1_max  
+mini_fresadora_cnc  
+mouse_inalambrico  
+osciloscopio_digital_rigol_ds1202ze  
+pantalla_interactiva_onescreen  
+puerta_smart_center_lab  
+robot_humanoide_AULER  
+robot_logo_mindstorms_ev3  
+router  
+soil_integrated_sensor  
+tablet  
+tomacorrientes_110V  
+ups_netion  
