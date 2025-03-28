@@ -71,7 +71,7 @@ def import_and_predict(image_data, model, class_names):
     if image_data.mode != 'RGB':
         image_data = image_data.convert('RGB')
         
-    image_data = image_data.resize((180, 180))
+    image_data = image_data.resize((224, 224))  # Ajustado a 224x224
     image = tf.keras.utils.img_to_array(image_data)
     image = tf.expand_dims(image, 0)  # Crear un batch
     prediction = model.predict(image)
