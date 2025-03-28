@@ -43,7 +43,7 @@ with st.spinner('Modelo está cargando..'):
 
 # Generar saludo
 def generar_saludo():
-    texto = "¡Hola! soy Órasi, tu asistente neuronal personal, ¿Que producto vamos a identificar hoy?"
+    texto = "¡Hola! soy Órasi, tu asistente neuronal personal, ¿Qué producto vamos a identificar hoy?"
     tts = gTTS(text=texto, lang='es')
     mp3_fp = BytesIO()
     tts.write_to_fp(mp3_fp)
@@ -71,9 +71,14 @@ def import_and_predict(image_data, model, class_names):
     if image_data.mode != 'RGB':
         image_data = image_data.convert('RGB')
         
-    image_data = image_data.resize((180, 180))
-    image = tf.keras.utils.img_to_array(image_data)
-    image = tf.expand_dims(image, 0)  # Crear un batch
+    # Redimensionar la imagen a 224x224 (como espera el modelo)
+    image_data = image_data.resize((224, 224))
+    image = np.array(image_data) / 255.0  # Normalizar
+
+    # Asegurar que tiene la forma correcta (1, 224, 224, 3)
+    image = np.expand_dims(image, axis=0)
+
+    # Realizar la predicción
     prediction = model.predict(image)
     index = np.argmax(prediction)
     score = tf.nn.softmax(prediction[0])
@@ -140,26 +145,18 @@ if img_file_buffer:
 else:
     st.text("Por favor, cargue una imagen usando una de las opciones anteriores.")
 
-#informacion para tomar foto
-
-with st.expander("Como tomar la FOTO correctamente"):
-   
+# Información para tomar foto correctamente
+with st.expander("Cómo tomar la FOTO correctamente"):
     st.markdown("¿Cómo poner el producto correctamente en la cámara?") 
 
-    # Ruta del archivo de video
-    video_file_path = './videos/SI.mp4'
-    try:
-        with open(video_file_path, 'rb') as video_file:
-            video_bytes = video_file.read()
-        st.video(video_bytes)
-    except FileNotFoundError:
-        st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
-
-    # Ruta del archivo de video
-    video_file_path = './videos/NO.mp4'
-    try:
-        with open(video_file_path, 'rb') as video_file:
-            video_bytes = video_file.read()
-        st.video(video_bytes)
-    except FileNotFoundError:
-        st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
+    # Video de cómo tomar la foto correctamente
+    video_file_path_si = './videos/SI.mp4'
+    video_file_path_no = './videos/NO.mp4'
+    
+    for path in [video_file_path_si, video_file_path_no]:
+        try:
+            with open(path, 'rb') as video_file:
+                video_bytes = video_file.read()
+            st.video(video_bytes)
+        except FileNotFoundError:
+            st.error(f"El archivo de video no se encontró en la ruta: {path}")
