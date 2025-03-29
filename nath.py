@@ -136,8 +136,9 @@ with st.sidebar:
     st.subheader("Identificación de objetos con VGG16")
     confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
-# Muestra una imagen representativa en la interfaz principal
-st.image('smartregionlab2.jpeg')
+# Título de la página
+st.image("./videos/banner.png", use_column_width=True)
+st.write("# Detección de Productos")
 st.title("Modelo de Identificación de Objetos - Smart Regions Center")
 st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")
 
