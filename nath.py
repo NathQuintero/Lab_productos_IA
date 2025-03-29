@@ -136,7 +136,7 @@ st.write("# Detección de Productos")
 st.title("Modelo de Identificación de Objetos - Smart Regions Center")
 st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")
 st.subheader("Identificación de objetos con VGG16")
-    confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
+confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
 def preprocess_image(image):
     if image.mode != 'RGB':
