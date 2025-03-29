@@ -17,11 +17,16 @@ import base64  # Importa base64 para codificar y decodificar datos en formato ba
 # Ignora las advertencias para evitar mensajes innecesarios en la ejecución del programa
 warnings.filterwarnings("ignore")
 
-# Configura la página de Streamlit con título, icono y estado inicial de la barra lateral
+# Configuración de la página
 st.set_page_config(
-    page_title="Reconocimiento de Objetos",  # Título de la página
-    page_icon=":smile:",  # Icono de la página
-    initial_sidebar_state='auto'  # Estado inicial de la barra lateral
+    page_title="¿Qué producto es?",
+    page_icon="icono.ico",
+    initial_sidebar_state='auto',
+    menu_items={
+        'Report a bug': 'http://www.unab.edu.co',
+        'Get Help': "https://docs.streamlit.io/get-started/fundamentals/main-concepts",
+        'About': "Nathalia Quintero & Angelly Cristancho. Inteligencia Artificial *Ejemplo de clase* Ingeniería de sistemas!"
+    }
 )
 
 # Define un estilo personalizado para ocultar elementos innecesarios de Streamlit
@@ -50,7 +55,7 @@ st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 def generar_saludo():
     """Genera un saludo al inicio, al estilo de Nathalia."""
-    texto = "¡Hola! soy Órasi, tu asistente neuronal personal, ¿Qué objeto vamos a identificar hoy?"
+    texto = "¡Hola! soy Cámapp, tu asistente neuronal personal, ¿Qué objeto del laboratorio vamos a identificar hoy?"
     tts = gTTS(text=texto, lang='es')
     mp3_fp = BytesIO()
     tts.write_to_fp(mp3_fp)
@@ -201,3 +206,27 @@ if img_file_buffer and model:
         st.error(f"Error al procesar la imagen: {e}")
 else:
     st.text("Por favor, cargue una imagen usando una de las opciones anteriores.")
+
+#informacion para tomar foto
+
+with st.expander("Como tomar la FOTO correctamente"):
+   
+    st.markdown("¿Cómo poner el producto correctamente en la cámara?") 
+
+    # Ruta del archivo de video
+    video_file_path = './videos/SI.mp4'
+    try:
+        with open(video_file_path, 'rb') as video_file:
+            video_bytes = video_file.read()
+        st.video(video_bytes)
+    except FileNotFoundError:
+        st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
+
+    # Ruta del archivo de video
+    video_file_path = './videos/NO.mp4'
+    try:
+        with open(video_file_path, 'rb') as video_file:
+            video_bytes = video_file.read()
+        st.video(video_bytes)
+    except FileNotFoundError:
+        st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
