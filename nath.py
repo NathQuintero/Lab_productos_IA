@@ -124,29 +124,21 @@ def preprocess_image(image):
     return image_array
 
 def import_and_predict(image, model, class_names):
-    # Verifica si el modelo está cargado
     if model is None:
         return "Modelo no cargado", 0.0
     
-    # Preprocesa la imagen antes de realizar la predicción
     image = preprocess_image(image)
-    
-    # Realiza la predicción con el modelo
     prediction = model.predict(image)
-    
-    # Obtiene el índice de la clase con mayor probabilidad
     index = np.argmax(prediction[0])
-    
-    # Obtiene la confianza de la predicción
-    confidence = np.max(prediction[0])
-    
-    # Verifica si el índice está dentro de los nombres de clase disponibles
-    if index < len(class_names):
-        class_name = class_names[index]
+    confidence = prediction[0][index]
+
+    # Aseguramos que class_names tiene elementos y definimos resultado_limpio
+    if class_names and 0 <= index < len(class_names):
+        resultado_limpio = class_names[index]  # Asigna el nombre de la clase predicha
     else:
-        class_name = "Desconocido"
-    
-    return class_name, confidence
+        resultado_limpio = "Clase desconocida"  # Caso de seguridad
+
+    return resultado_limpio, confidence
 
 def generar_audio(texto):
     """Genera audio asegurando que siempre haya contenido."""
