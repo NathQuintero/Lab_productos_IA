@@ -104,12 +104,12 @@ with st.spinner('Cargando modelo...'):
 # Cargar nombres de clases desde un archivo externo
 class_names = []
 try:
-    with open("claseIA.txt", "r", encoding="utf-8") as f:
+    with open("clase.txt", "r", encoding="utf-8") as f:
         class_names = [line.strip().lower() for line in f.readlines()]
     if not class_names:
-        st.error("El archivo claseIA.txt está vacío.")
+        st.error("El archivo clase.txt está vacío.")
 except FileNotFoundError:
-    st.error("No se encontró el archivo claseIA.txt.")
+    st.error("No se encontró el archivo clase.txt.")
 
 # Cargar descripciones de objetos desde un archivo externo
 descripcion_dict = {}
