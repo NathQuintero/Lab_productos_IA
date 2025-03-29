@@ -129,18 +129,14 @@ try:
 except FileNotFoundError:
     st.error("No se encontró el archivo proma.txt.")
 
-# Configuración de la barra lateral en la aplicación web
-with st.sidebar:
-    st.video("https://www.youtube.com/watch?v=xxUHCtHnVk8")
-    st.title("Reconocimiento de imagen")
-    st.subheader("Identificación de objetos con VGG16")
-    confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
 # Título de la página
 st.image("./videos/banner.png", use_column_width=True)
 st.write("# Detección de Productos")
 st.title("Modelo de Identificación de Objetos - Smart Regions Center")
 st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")
+st.subheader("Identificación de objetos con VGG16")
+    confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
 def preprocess_image(image):
     if image.mode != 'RGB':
