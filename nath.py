@@ -46,6 +46,40 @@ hide_streamlit_style = """
 # Aplica el estilo personalizado a la página de Streamlit
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
+# ------------------ Funciones de Audio (al estilo Nathalia) ------------------
+
+def generar_saludo():
+    """Genera un saludo al inicio, al estilo de Nathalia."""
+    texto = "¡Hola! soy Órasi, tu asistente neuronal personal, ¿Qué objeto vamos a identificar hoy?"
+    tts = gTTS(text=texto, lang='es')
+    mp3_fp = BytesIO()
+    tts.write_to_fp(mp3_fp)
+    mp3_fp.seek(0)
+    return mp3_fp
+
+def generar_audio(texto):
+    """Genera audio a partir del texto proporcionado."""
+    if not texto.strip():
+        texto = "No se encontró información para este objeto."
+    tts = gTTS(text=texto, lang='es')
+    mp3_fp = BytesIO()
+    tts.write_to_fp(mp3_fp)
+    mp3_fp.seek(0)
+    return mp3_fp
+
+def reproducir_audio(mp3_fp):
+    """Reproduce el audio generado en Streamlit."""
+    audio_bytes = mp3_fp.read()
+    audio_base64 = base64.b64encode(audio_bytes).decode()
+    audio_html = f'<audio autoplay="true"><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
+    st.markdown(audio_html, unsafe_allow_html=True)
+
+# Reproduce el saludo inicial (al estilo Nathalia)
+mp3_fp_saludo = generar_saludo()
+reproducir_audio(mp3_fp_saludo)
+
+# -----------------------------------------------------------------------------
+
 # Define una función para cargar el modelo de inteligencia artificial con caché para optimizar el rendimiento
 @st.cache_resource
 def load_model():
@@ -60,7 +94,6 @@ def load_model():
         model = tf.keras.models.load_model(model_path, compile=False)
         return model
     except Exception as e:
-        # Muestra un mensaje de error en caso de fallo al cargar el modelo
         st.error(f"Error al cargar el modelo: {e}")
         return None
 
@@ -71,114 +104,59 @@ with st.spinner('Cargando modelo...'):
 # Cargar nombres de clases desde un archivo externo
 class_names = []
 try:
-    with open("clase.txt", "r", encoding="utf-8") as f:
-        class_names = [line.strip().lower() for line in f.readlines()]  # Lee y almacena los nombres de las clases en minúsculas
+    with open("claseIA.txt", "r", encoding="utf-8") as f:
+        class_names = [line.strip().lower() for line in f.readlines()]
     if not class_names:
-        st.error("El archivo clase.txt está vacío.")  # Muestra un error si el archivo está vacío
+        st.error("El archivo claseIA.txt está vacío.")
 except FileNotFoundError:
-    st.error("No se encontró el archivo clase.txt.")  # Muestra un error si el archivo no se encuentra
+    st.error("No se encontró el archivo claseIA.txt.")
 
 # Cargar descripciones de objetos desde un archivo externo
 descripcion_dict = {}
 try:
     with open("proma.txt", "r", encoding="utf-8") as f:
         for line in f:
-            partes = line.strip().split(":", 1)  # Divide cada línea en clave y descripción
+            partes = line.strip().split(":", 1)
             if len(partes) == 2:
-                clave = partes[0].strip().lower()  # Convierte la clave a minúsculas
-                descripcion = partes[1].strip()  # Extrae la descripción
-                descripcion_dict[clave] = descripcion  # Almacena la clave y descripción en el diccionario
+                clave = partes[0].strip().lower()
+                descripcion = partes[1].strip()
+                descripcion_dict[clave] = descripcion
 except FileNotFoundError:
-    st.error("No se encontró el archivo proma.txt.")  # Muestra un error si el archivo no se encuentra
+    st.error("No se encontró el archivo proma.txt.")
 
 # Configuración de la barra lateral en la aplicación web
 with st.sidebar:
-    st.video("https://www.youtube.com/watch?v=xxUHCtHnVk8")  # Muestra un video en la barra lateral
-    st.title("Reconocimiento de imagen")  # Título en la barra lateral
-    st.subheader("Identificación de objetos con VGG16")  # Subtítulo en la barra lateral
-    
-    # Slider para seleccionar el nivel de confianza del modelo (0-100%)
-    confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100  # Se normaliza entre 0 y 1
+    st.video("https://www.youtube.com/watch?v=xxUHCtHnVk8")
+    st.title("Reconocimiento de imagen")
+    st.subheader("Identificación de objetos con VGG16")
+    confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
-# Muestra una imagen en la interfaz principal de la aplicación
-st.image('smartregionlab2.jpeg')  # Imagen representativa del proyecto
-st.title("Modelo de Identificación de Objetos - Smart Regions Center")  # Título principal
-st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")  # Descripción del proyecto
+# Muestra una imagen representativa en la interfaz principal
+st.image('smartregionlab2.jpeg')
+st.title("Modelo de Identificación de Objetos - Smart Regions Center")
+st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")
+
 def preprocess_image(image):
-    # Verifica si la imagen no está en modo RGB y la convierte si es necesario
     if image.mode != 'RGB':
         image = image.convert('RGB')
-    
-    # Redimensiona la imagen a 224x224 píxeles, compatible con el modelo
     image = image.resize((224, 224))
-    
-    # Convierte la imagen en un array de NumPy
     image_array = np.array(image)
-    
-    # Expande las dimensiones para que sea compatible con el modelo de predicción
     image_array = np.expand_dims(image_array, axis=0)
-    
-    # Aplica el preprocesamiento requerido por el modelo
     image_array = preprocess_input(image_array)
-    
     return image_array
 
 def import_and_predict(image, model, class_names):
-    # Verifica si el modelo está cargado
     if model is None:
         return "Modelo no cargado", 0.0
-    
-    # Preprocesa la imagen antes de realizar la predicción
     image = preprocess_image(image)
-    
-    # Realiza la predicción con el modelo
     prediction = model.predict(image)
-    
-    # Obtiene el índice de la clase con mayor probabilidad
     index = np.argmax(prediction[0])
-    
-    # Obtiene la confianza de la predicción
     confidence = np.max(prediction[0])
-    
-    # Verifica si el índice está dentro de los nombres de clase disponibles
     if index < len(class_names):
         class_name = class_names[index]
     else:
         class_name = "Desconocido"
-    
     return class_name, confidence
-
-def generar_audio(texto):
-    """Genera audio asegurando que siempre haya contenido."""
-    # Si el texto está vacío, proporciona un mensaje predeterminado
-    if not texto.strip():
-        texto = "No se encontró información para este objeto."
-    
-    # Convierte el texto en audio usando gTTS
-    tts = gTTS(text=texto, lang='es')
-    
-    # Crea un buffer en memoria para almacenar el archivo de audio
-    mp3_fp = BytesIO()
-    tts.write_to_fp(mp3_fp)
-    
-    # Reinicia la posición del buffer para su lectura
-    mp3_fp.seek(0)
-    
-    return mp3_fp
-
-def reproducir_audio(mp3_fp):
-    """Reproduce el audio generado en Streamlit."""
-    # Lee los bytes del archivo de audio
-    audio_bytes = mp3_fp.read()
-    
-    # Convierte el audio a formato base64 para incrustarlo en HTML
-    audio_base64 = base64.b64encode(audio_bytes).decode()
-    
-    # Genera una etiqueta HTML para la reproducción automática del audio
-    audio_html = f'<audio autoplay="true"><source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3"></audio>'
-    
-    # Inserta el HTML en la aplicación Streamlit
-    st.markdown(audio_html, unsafe_allow_html=True)
 
 # Captura una imagen desde la cámara o permite la carga de un archivo
 img_file_buffer = st.camera_input("Capture una foto para identificar el objeto") or \
@@ -191,7 +169,6 @@ if img_file_buffer is None:
     image_url = st.text_input("O ingrese la URL de la imagen")
     if image_url:
         try:
-            # Descarga la imagen desde la URL proporcionada
             response = requests.get(image_url)
             img_file_buffer = BytesIO(response.content)
         except Exception as e:
@@ -200,28 +177,13 @@ if img_file_buffer is None:
 # Si hay una imagen cargada y el modelo está disponible
 if img_file_buffer and model:
     try:
-        # Abre la imagen con PIL
         image = Image.open(img_file_buffer)
-        
-        # Muestra la imagen en la interfaz de Streamlit
         st.image(image, use_column_width=True)
-        
-        # Realiza la predicción con el modelo
         class_name, confidence_score = import_and_predict(image, model, class_names)
-        
-        # Obtiene la descripción de la clase detectada
         descripcion = descripcion_dict.get(class_name, "No hay información disponible para este objeto.")
         
-        # Verifica si la confianza de la predicción supera el umbral establecido
         if confidence_score > confianza:
-            resultado = f"Objeto Detectado: {class_name.capitalize()}\n"
-            resultado += f"Confianza: {100 * confidence_score:.2f}%\n\n"
-            resultado += f"Descripción: {descripcion}"
-            
-            # Elimina caracteres no deseados del resultado
-            resultado_limpio = resultado.replace('*', '').replace('_', '').replace('/', '')
-            
-            # Muestra los resultados en la interfaz de Streamlit
+            resultado = f"Objeto Detectado: {class_name.capitalize()}\nConfianza: {100 * confidence_score:.2f}%\nDescripción: {descripcion}"
             st.subheader(f"Tipo de Objeto: {class_name.capitalize()}")
             st.text(f"Confianza: {100 * confidence_score:.2f}%")
             st.write(f"Descripción: {descripcion}")
@@ -229,11 +191,11 @@ if img_file_buffer and model:
             resultado = "No se pudo determinar el tipo de objeto"
             st.text(resultado)
         
-        # Genera y reproduce el audio con la descripción del objeto
-        mp3_fp1 = generar_audio(resultado_limpio)
-        reproducir_audio(mp3_fp1)
-        mp3_fp = generar_audio(descripcion)
-        reproducir_audio(mp3_fp1)
+        # Limpia el resultado para evitar caracteres especiales
+        resultado_limpio = resultado.replace('*', '').replace('_', '').replace('/', '')
+        # Genera y reproduce el audio con el resultado
+        mp3_fp_resultado = generar_audio(resultado_limpio)
+        reproducir_audio(mp3_fp_resultado)
         
     except Exception as e:
         st.error(f"Error al procesar la imagen: {e}")
