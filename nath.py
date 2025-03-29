@@ -138,6 +138,19 @@ st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales"
 st.subheader("Identificación de objetos con VGG16")
 confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
+if option == "Tomar foto":
+    img_file_buffer = st.camera_input("Capture una foto para identificar el producto")
+elif option == "Subir archivo":
+    img_file_buffer = st.file_uploader("Cargar imagen desde archivo", type=["jpg", "jpeg", "png"])
+elif option == "URL":
+    image_url = st.text_input("O ingrese la URL de la imagen")
+    if image_url:
+        try:
+            response = requests.get(image_url)
+            img_file_buffer = BytesIO(response.content)
+        except Exception as e:
+            st.error(f"Error al cargar la imagen desde la URL: {e}")
+            
 def preprocess_image(image):
     if image.mode != 'RGB':
         image = image.convert('RGB')
