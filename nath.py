@@ -47,8 +47,6 @@ hide_streamlit_style = """
     }
     </style>
 """
-
-# Aplica el estilo personalizado a la página de Streamlit
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
 # ------------------ Funciones de Audio (al estilo Nathalia) ------------------
@@ -88,7 +86,7 @@ reproducir_audio(mp3_fp_saludo)
 # Define una función para cargar el modelo de inteligencia artificial con caché para optimizar el rendimiento
 @st.cache_resource
 def load_model():
-    model_path = "./modelo_entrenado.h5"  # Ruta del modelo entrenado
+    model_path = "./proyectoCD.h5"  # Ruta del modelo entrenado (nuevo nombre)
     
     # Verifica si el archivo del modelo existe en la ruta especificada
     if not os.path.exists(model_path):
@@ -129,7 +127,6 @@ try:
 except FileNotFoundError:
     st.error("No se encontró el archivo proma.txt.")
 
-
 # Título de la página
 st.image("./videos/banner.png", use_column_width=True)
 st.write("# Detección de Productos Cámapp")
@@ -137,7 +134,6 @@ st.title("Smart Regions Center")
 st.write("Desarrolado por Angelly y Nathalia")
 confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
-            
 def preprocess_image(image):
     if image.mode != 'RGB':
         image = image.convert('RGB')
@@ -204,12 +200,10 @@ if img_file_buffer and model:
 else:
     st.text("Por favor, cargue una imagen usando una de las opciones anteriores.")
 
-#informacion para tomar foto
-
+# Información para tomar foto
 with st.expander("Como tomar la FOTO correctamente"):
-   
-    st.markdown("¿Cómo poner el producto correctamente en la cámara?") 
-
+    st.markdown("¿Cómo poner el producto correctamente en la cámara?")
+    
     # Ruta del archivo de video
     video_file_path = './videos/SI.mp4'
     try:
@@ -218,7 +212,7 @@ with st.expander("Como tomar la FOTO correctamente"):
         st.video(video_bytes)
     except FileNotFoundError:
         st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
-
+    
     # Ruta del archivo de video
     video_file_path = './videos/NO.mp4'
     try:
@@ -227,3 +221,4 @@ with st.expander("Como tomar la FOTO correctamente"):
         st.video(video_bytes)
     except FileNotFoundError:
         st.error(f"El archivo de video no se encontró en la ruta: {video_file_path}")
+
