@@ -11,7 +11,7 @@ mini_fresadora_cnc
 mouse
 osciloscopio_digital_rigol_ds1202ze
 puerta
-robot_humanoide_AULER
+robot humanoide AULER
 robot_lego_mindstorms_ev3
 router
 soil_integrated_sensor
