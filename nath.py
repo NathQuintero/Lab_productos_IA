@@ -138,6 +138,16 @@ st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales"
 st.subheader("Identificación de objetos con VGG16")
 confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
+option = st.selectbox(
+    "¿Qué te gustaría usar para subir la foto?",
+    ("Tomar foto", "Subir archivo", "URL"),
+    index=None,
+    placeholder="Selecciona cómo subir la foto"
+)
+confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
+
+img_file_buffer = None
+
 if option == "Tomar foto":
     img_file_buffer = st.camera_input("Capture una foto para identificar el producto")
 elif option == "Subir archivo":
