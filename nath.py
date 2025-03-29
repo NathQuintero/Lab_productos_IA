@@ -132,10 +132,9 @@ except FileNotFoundError:
 
 # Título de la página
 st.image("./videos/banner.png", use_column_width=True)
-st.write("# Detección de Productos")
-st.title("Modelo de Identificación de Objetos - Smart Regions Center")
-st.write("Desarrollo del Proyecto de Ciencia de Datos con Redes Convolucionales")
-st.subheader("Identificación de objetos con VGG16")
+st.write("# Detección de Productos Cámapp")
+st.title("Smart Regions Center")
+st.write("Desarrolado por Angelly y Nathalia")
 confianza = st.slider("Seleccione el nivel de confianza", 0, 100, 50) / 100
 
             
