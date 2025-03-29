@@ -88,7 +88,7 @@ reproducir_audio(mp3_fp_saludo)
 # Define una función para cargar el modelo de inteligencia artificial con caché para optimizar el rendimiento
 @st.cache_resource
 def load_model():
-    model_path = "./productosa.h5"  # Ruta del modelo entrenado
+    model_path = "./modelo_entrenado.h5"  # Ruta del modelo entrenado
     
     # Verifica si el archivo del modelo existe en la ruta especificada
     if not os.path.exists(model_path):
