@@ -56,7 +56,8 @@ required_classes = {'boots', 'helmet', 'vest', 'human'}
 model_classes = ['boots', 'gloves', 'helmet', 'human', 'vest']  # Ajusta según el modelo real
 
 # 💬 Nivel de confianza
-confianza = st.slider("🔒 Nivel mínimo de confianza", 0, 100, 50) / 100
+st.markdown("**Selecciona el nivel mínimo de confianza para aceptar una clase detectada:**")
+confianza = st.slider("Confianza (%)", min_value=0, max_value=100, value=50, step=1) / 100.0
 
 # 📤 Carga de imagen
 option = st.radio("Selecciona cómo subir la imagen:", ["📂 Archivo", "🌐 URL", "📸 Cámara"])
@@ -94,7 +95,12 @@ if image:
     output_data = interpreter.get_tensor(output_details[0]['index'])
 
     # Interpretación multiclase con umbral de confianza
-    predicted_labels = [model_classes[i] for i, prob in enumerate(output_data[0][:len(model_classes)]) if prob > confianza]
+    predicted_labels = [
+        model_classes[i]
+        for i, prob in enumerate(output_data[0][:len(model_classes)])
+        if float(np.squeeze(prob)) > confianza
+    ]
+
     detected_set = set(predicted_labels)
     faltantes = required_classes - detected_set
 
